@@ -1,0 +1,17 @@
+#newpost{
+	
+	border: 2px solid grey;
+	width: 70%;
+	margin: auto;
+}
+
+#newpost-textarea{
+	display: block;
+	width: 95%;
+	margin: auto;
+}
+
+#posts{
+	margin: auto;
+}
+

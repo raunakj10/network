@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="{% static 'network/follow.js' %}" type="text/javascript"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	 <link rel="shortcut icon" href="#">
+	 <script src="{% static 'network/index.js' %}" type="text/javascript"></script>
+	 <script src="https://kit.fontawesome.com/ee7f829154.js" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="card text-center" style="width: 30%; margin: auto;">
+  		<div class="card-body" >
+    	<h5 class="card-title">{{ user }}</h5>
+    	<div style="display: inline-flex; border: 3px solid black;">Followers:<br>{{ followers.count }}</div>
+    	<div style=" display: inline-flex;border: 3px solid black;">Following:<br>{{ following.count }}</div><br><br>
+    	{% ifnotequal request.user.username user %}
+    	{% if request.user in followers %}
+    	<a  href="{% url 'follow_unfollow' user %}" class="btn btn-primary">Unfollow</a>
+    	{% else %}
+    	<a  href="{% url 'follow_unfollow' user %}" class="btn btn-primary">Follow</a>
+    	{% endif %}
+    	{% endifnotequal %}
+
+  		</div>
+	</div>
+
+	<center><h2> Posts </h2></center>
+	{% for post in page_obj%}
+
+				<div class="card" style="margin: auto; width: 90%;" id="{{ post.id }}">
+					<a href="/profile/{{post.user}}"><h5 class="card-header">{{post.user.username}}</h5></a>
+					
+					<div class="card-body">
+			  			<h5 class="card-title">{{post.content}}</h5>
+			    		<p class="card-text">{{post.date}}</p>
+						<!-- <button class="like-button">{{post.likes}} Likes</button> -->
+						{% if request.user in post.likes.all %}
+						<button data-id="{{ post.id }}" class="like-button"><i class="far fa-heart " >{{ post.likes.all.count}} </i><span>Unlike</span></button>
+						{% else %}
+						<button data-id="{{ post.id }}" class="like-button"><i class="far fa-heart " >{{ post.likes.all.count}} </i><span>Like</span></button>
+						{% endif %}
+						{% if post.user == request.user %}
+							<button class= "cancel-button" style="float: right; display: none" >Cancel</button>
+							<button class= "edit-button" style="float: right;" data-id ="{{ post.id }}">Edit</button>
+						{% endif %}
+					</div>
+				</div>
+	        {% endfor %}
+
+
+	<div class="pagination">
+    		<ul class="pagination">
+        		{% if page_obj.has_previous %}
+            		<li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+            		<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+        		{% endif %}
+
+        		
+
+        		{% for num in page_obj.paginator.page_range %}
+            		{% ifequal num page_obj.number %}
+
+            			<li class="page-item"><a class="page-link">{{ num }}</a></li>
+    
+      				{% else %}
+   						<li class="page-item"><a class="page-link" href="?page={{ num }}"> {{ num }}</a></li>
+  					{% endifequal %} 
+				{% endfor %}
+       
+				{% if page_obj.has_next %}
+            		<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a></li>
+           			<li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+        		{% endif %}
+        		
+			</ul>    
+		</div>
+
+
+
+</body>
+</html>
+
+
+    
+
+
